@@ -1,9 +1,9 @@
 import random
 
 type_chart = {
-    "Fire": {"Grass": 2.0, "Water": 0.5, "Fire": 1},
-    "Water": {"Fire": 2.0, "Grass": 0.5, "Water": 1},
-    "Grass": {"Water": 2.0, "Fire": 0.5, "Grass": 1}
+    "Fire": {"Grass": 2.0, "Water": 0.5, "Fire": 0.5},
+    "Water": {"Fire": 2.0, "Grass": 0.5, "Water": 0.5},
+    "Grass": {"Water": 2.0, "Fire": 0.5, "Grass": 0.5}
 }
 
 
@@ -134,7 +134,7 @@ def initiateBattle(playerYou, player_rival):
             p1.attackEmber(p2)
         elif action =="Scratch":
             p1.attackScratch(p2)
-            
+
 #Fix this, change how the attack works
         if rival_action == "Ember":
             p2.attackEmber(p1)
