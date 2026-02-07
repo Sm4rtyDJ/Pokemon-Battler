@@ -70,17 +70,32 @@ class Squirtle(Pokemon):
 
     def __init__(self):
         super().__init__("Squirtle", 25, "Water")
+        self.moves = {
+            "Bubble": "Water",
+            "Tackle": "Normal"
+        }
 
     def attackBubble(self, target):
         super().attack(target, "Bubble", "Water")
+
+    def attackTackle(self, target):
+        super().attack(target, "Tackle", "Normal")
 
 
 class Bulbasaur(Pokemon):
     def __init__(self):
         super().__init__("Bulbasaur", 30, "Grass" )
+        self.moves = {
+            "Razor Leaf": "Grass",
+            "Headbutt": "Normal"
+        }
 
     def attackRazorLeaf(self, target):
         super().attack(target, "Razor Leaf", "Grass")
+
+    def attackHeadbutt(self, target):
+        super().attack(target, "Headbutt", "Normal")
+
 
 
 starter_PKMN = [Charmander(), Squirtle(), Bulbasaur()]
@@ -105,19 +120,37 @@ def rivalChoose(yourRival):
     yourRival.your_team.append(starter_PKMN[choice])
 
 
+
 def initiateBattle(playerYou, player_rival):
     p1 = playerYou.your_team[0]
     p2 = player_rival.your_team[0]
     print(f"{playerYou.name} VS {player_rival.name} ")
     while p1.hp > 0 and p2.hp > 0: 
         moves = list(p1.moves.keys())
-        action = input(f"Your opponent is using a {p2.name}. What do you wish to do?\n{moves}")
+        rival_moves = list(p2.moves.keys())
+        rival_action = random.choice(rival_moves)
+        action = input(f"Which move do want to use? {moves}")
         if action == "Ember":
             p1.attackEmber(p2)
-            print(f"{p2.name} has {p2.hp} left")
         elif action =="Scratch":
             p1.attackScratch(p2)
-            print(f"{p2.name} has {p2.hp} left")
+            
+#Fix this, change how the attack works
+        if rival_action == "Ember":
+            p2.attackEmber(p1)
+        elif rival_action == "Scratch":
+            p2.attackScratch(p1)
+        elif rival_action =="Headbutt":
+            p2.attackHeadbutt(p1)
+        elif rival_action =="Tackle":
+            p2.attackTackle(p1)
+        elif rival_action == "Bubble":
+            p2.attackBubble(p1)
+        elif rival_action == "Razor Leaf":
+            p2.attackRazorLeaf(p1)
+
+        print(f"{p2.name} has {p2.hp}hp left")
+        print(f"{p1.name} has {p1.hp}hp left")
 
     if p1.hp <= 0:
         print(f"{p1.name} has fainted! You have lost the battle, {p2.name} is the winner!")
