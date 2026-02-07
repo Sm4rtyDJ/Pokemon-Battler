@@ -15,7 +15,7 @@ class player():
     def __str__(self):
         return self.name
 
-
+ 
 class rival(player):
     def __init__(self, name, your_team):
         super().__init__(name, your_team)
@@ -28,15 +28,22 @@ class Pokemon():
         self.hp = hp
         self.type = type
         self.name = name
-        self.basedamage = 10
+        self.basedamage = 3
+        self.moves = {}
 
-    def attack(self, target):
-        advantages = type_chart.get(self.type, {})
-        multiplier = advantages.get(target.type, 1.0)
-
-        damage = self.basedamage * multiplier
+    def attack(self, target, name, move_type): #add move_power in the future
+        advantages = type_chart.get(move_type, {})       #|
+        multiplier = advantages.get(target.type, 1.0)    #|       
+                                                         #V
+        damage = self.basedamage * multiplier #damage = (self.basedamage + move_power) * multiplier 
         target.hp -=damage
-        print(f"{self.name} attacked {target.name}")
+        print(f"{self.name} used {name} on {target.name}")
+
+        if multiplier > 1:
+            print("Its super effective!")
+
+        elif multiplier < 1:
+            print("Its not very effective...")
  
     def __str__(self):
         return self.name
@@ -46,6 +53,17 @@ class Pokemon():
 class Charmander(Pokemon):
     def __init__(self):
         super().__init__("Charmander", 20, "Fire")
+        self.moves = {
+            "Ember": "Fire",
+            "Scratch" : "Normal"
+            }
+
+
+    def attackEmber(self, target):
+        super().attack(target, "Ember", "Fire")
+
+    def attackScratch(self, target):
+        super().attack(target, "Scratch", "Normal")
 
 
 class Squirtle(Pokemon):
@@ -53,11 +71,16 @@ class Squirtle(Pokemon):
     def __init__(self):
         super().__init__("Squirtle", 25, "Water")
 
+    def attackBubble(self, target):
+        super().attack(target, "Bubble", "Water")
+
 
 class Bulbasaur(Pokemon):
     def __init__(self):
         super().__init__("Bulbasaur", 30, "Grass" )
 
+    def attackRazorLeaf(self, target):
+        super().attack(target, "Razor Leaf", "Grass")
 
 
 starter_PKMN = [Charmander(), Squirtle(), Bulbasaur()]
@@ -82,7 +105,25 @@ def rivalChoose(yourRival):
     yourRival.your_team.append(starter_PKMN[choice])
 
 
-#def initiateBattle(playerYou, player_rival):
+def initiateBattle(playerYou, player_rival):
+    p1 = playerYou.your_team[0]
+    p2 = player_rival.your_team[0]
+    print(f"{playerYou.name} VS {player_rival.name} ")
+    while p1.hp > 0 and p2.hp > 0: 
+        moves = list(p1.moves.keys())
+        action = input(f"Your opponent is using a {p2.name}. What do you wish to do?\n{moves}")
+        if action == "Ember":
+            p1.attackEmber(p2)
+            print(f"{p2.name} has {p2.hp} left")
+        elif action =="Scratch":
+            p1.attackScratch(p2)
+            print(f"{p2.name} has {p2.hp} left")
+
+    if p1.hp <= 0:
+        print(f"{p1.name} has fainted! You have lost the battle, {p2.name} is the winner!")
+    else: 
+        print(f"{p2.name} has fainted! You have won the battle, {p1.name} is the winner!")
+
 
 
 
@@ -94,8 +135,20 @@ while True:
     print(f"Welome to Pokemon pocket edition {playerYou.name} \nThis is a demo and you will be able to choose a pokemon and battle with your rival {player_rival.name}\n")
     choosePKMN(playerYou)
     rivalChoose(player_rival)
-    if len(playerYou.your_team) > 0:
-        print(f"Prof. Tree: Ah so you have chosen {playerYou.your_team[0].name} and your rival {player_rival.name} has chosen {player_rival.your_team[0].name}")
+    while True:
+        if len(playerYou.your_team) > 0:
+            print(f"Prof. Tree: Ah so you have chosen {playerYou.your_team[0].name} and your rival {player_rival.name} has chosen {player_rival.your_team[0].name}")
+            ready = input("Are you ready for battle? y/n")
+            if ready == "y":
+                print("Let the battle begin!")
+                initiateBattle(playerYou, player_rival)
+                break  
+    print("Thank you for playing")
+    break
+
+    
+
+        
         
   
 
