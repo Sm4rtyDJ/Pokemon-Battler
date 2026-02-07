@@ -3,7 +3,8 @@ import random
 type_chart = {
     "Fire": {"Grass": 2.0, "Water": 0.5, "Fire": 0.5},
     "Water": {"Fire": 2.0, "Grass": 0.5, "Water": 0.5},
-    "Grass": {"Water": 2.0, "Fire": 0.5, "Grass": 0.5}
+    "Grass": {"Water": 2.0, "Fire": 0.5, "Grass": 0.5},
+    "Normal": {"Water": 1.0, "Fire": 1.0, "Grass": 1.0}
 }
 
 
@@ -52,7 +53,7 @@ class Pokemon():
 
 class Charmander(Pokemon):
     def __init__(self):
-        super().__init__("Charmander", 20, "Fire")
+        super().__init__("Charmander", 15, "Fire")
         self.moves = {
             "Ember": "Fire",
             "Scratch" : "Normal"
@@ -69,7 +70,7 @@ class Charmander(Pokemon):
 class Squirtle(Pokemon):
 
     def __init__(self):
-        super().__init__("Squirtle", 25, "Water")
+        super().__init__("Squirtle", 15, "Water")
         self.moves = {
             "Bubble": "Water",
             "Tackle": "Normal"
@@ -84,7 +85,7 @@ class Squirtle(Pokemon):
 
 class Bulbasaur(Pokemon):
     def __init__(self):
-        super().__init__("Bulbasaur", 30, "Grass" )
+        super().__init__("Bulbasaur", 15, "Grass" )
         self.moves = {
             "Razor Leaf": "Grass",
             "Headbutt": "Normal"
@@ -98,7 +99,7 @@ class Bulbasaur(Pokemon):
 
 
 
-starter_PKMN = [Charmander(), Squirtle(), Bulbasaur()]
+starter_PKMN = [Charmander(), Squirtle(), Bulbasaur()] #
 def choosePKMN(currentPlayer):
     while True:
         answer = input(f"Which starter do you want to pick? \n{starter_PKMN[0]}\n{starter_PKMN[1]}\n{starter_PKMN[2]}")
@@ -109,15 +110,20 @@ def choosePKMN(currentPlayer):
                 for pkmn in starter_PKMN: 
                     if pkmn.name == answer:
                         currentPlayer.your_team.append(pkmn)
+                        return pkmn
                 break
             else:
                 continue
         else: print("Please choose one of the displayed pokemon ")
 
 
-def rivalChoose(yourRival):
-    choice = random.randint(0,2)
-    yourRival.your_team.append(starter_PKMN[choice])
+def rivalChoose(yourRival, player_choice):
+    available_choices = []
+    for pkmn in starter_PKMN:
+        if pkmn != player_choice:
+            available_choices.append(pkmn)
+    choice = random.randint(0,1)
+    yourRival.your_team.append(available_choices[choice])
 
 
 
@@ -134,6 +140,14 @@ def initiateBattle(playerYou, player_rival):
             p1.attackEmber(p2)
         elif action =="Scratch":
             p1.attackScratch(p2)
+        elif action =="Headbutt":
+            p1.attackHeadbutt(p2)
+        elif action =="Tackle":
+            p1.attackTackle(p2)
+        elif action == "Bubble":
+            p1.attackBubble(p2)
+        elif action == "Razor Leaf":
+            p1.attackRazorLeaf(p2)
 
 #Fix this, change how the attack works
         if rival_action == "Ember":
@@ -149,8 +163,8 @@ def initiateBattle(playerYou, player_rival):
         elif rival_action == "Razor Leaf":
             p2.attackRazorLeaf(p1)
 
-        print(f"{p2.name} has {p2.hp}hp left")
-        print(f"{p1.name} has {p1.hp}hp left")
+        print(f"Rival {p2.name} has {p2.hp}hp left")
+        print(f"Player {p1.name} has {p1.hp}hp left")
 
     if p1.hp <= 0:
         print(f"{p1.name} has fainted! You have lost the battle, {p2.name} is the winner!")
@@ -166,8 +180,8 @@ while True:
     player_rival = rival(rivalName, [])
     playerYou = player(name, [])
     print(f"Welome to Pokemon pocket edition {playerYou.name} \nThis is a demo and you will be able to choose a pokemon and battle with your rival {player_rival.name}\n")
-    choosePKMN(playerYou)
-    rivalChoose(player_rival)
+    my_choice = choosePKMN(playerYou)
+    rivalChoose(player_rival, my_choice)
     while True:
         if len(playerYou.your_team) > 0:
             print(f"Prof. Tree: Ah so you have chosen {playerYou.your_team[0].name} and your rival {player_rival.name} has chosen {player_rival.your_team[0].name}")
